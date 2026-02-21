@@ -1,5 +1,6 @@
 require("dotenv").config();
-const { Client, GatewayIntentBits } = require("discord.js");
+const { Client, GatewayIntentBits, AttachmentBuilder, Message } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -12,6 +13,11 @@ client.on("interactionCreate", async (interaction) => {
 
   if (interaction.commandName === "ping") {
     await interaction.reply("pong!");
+  }
+
+  if (interaction.commandName === "sprite"){
+    const myAttachment = new AttachmentBuilder('./dead.png');
+    await interaction.channel.send({ files: [myAttachment]});
   }
 });
 

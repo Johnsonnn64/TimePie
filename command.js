@@ -2,6 +2,7 @@ require("dotenv").config();
 const { REST, Routes, SlashCommandBuilder } = require("discord.js");
 const commands = [
   new SlashCommandBuilder().setName("ping").setDescription("Replies with pong!"),
+  new SlashCommandBuilder().setName("sprite").setDescription("Puts a sprite image in chat."),
 ].map(c => c.toJSON());
 
 (async () => {
