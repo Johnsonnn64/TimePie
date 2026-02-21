@@ -1,0 +1,26 @@
+{
+  "name": "timepie",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JohnsoNNN64/TimePie.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JohnsoNNN64/TimePie/issues"
+  },
+  "homepage": "https://github.com/JohnsoNNN64/TimePie#readme",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "discord.js": "^14.25.1",
+    "dotenv": "^17.3.1"
+  }
+}
