@@ -80,12 +80,15 @@ const date = new Date();
     const img2 = await loadImage(imageActualBuf);
     const canvas = createCanvas((img1.width + img2.width), (img1.height));
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(img1, 0, 0);
-    ctx.drawImage(img2, img1.width, 0);
+    // place the images on the new canvas, side by side
+    ctx.drawImage(imgPlanned, 0, 0);
+    ctx.drawImage(imgActual, imgPlanned.width, 0);
+    // place the canvas in the image
     const combinedImage = canvas.toBuffer();
-    const comboImage = new AttachmentBuilder(combinedImage, { name: 'comboImage.png' });
+    // create the attachment
+    const comboChartImage = new AttachmentBuilder(combinedImage, { name: 'comboChartImage.png' });
 
-    //The embed for our statement that holds the information.
+    // the embed for our statement that holds the information.
     const statement = new EmbedBuilder()
       .setColor('#feffb9')
       .setTitle((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' Statement')
