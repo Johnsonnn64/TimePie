@@ -91,7 +91,7 @@ async function buildStatementAssets(plannedCategories, plannedData, actualCatego
   // the embed for our statement that holds the information.
   var plusMinus = [];
   for (let i = 0; i < plannedData.length; i ++) {
-    plusMinus[i] = `${plannedCategories[i]}: ${actualData[i] - plannedData[i]}`;
+    plusMinus[i] = `${plannedCategories[i]}: ${actualData[i]}/${plannedData[i]}`;
   }
 
   const statement = new EmbedBuilder()
