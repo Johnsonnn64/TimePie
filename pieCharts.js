@@ -1,15 +1,16 @@
 require("dotenv").config();
 
+// check the requirements
 const { Client, GatewayIntentBits, AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const { createCanvas, loadImage } = require('canvas');
 
+// client
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-//creating pie charts
-const pieChart = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
-const pieChart2 = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
-const pieChart3 = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
-//the date
+// creating pie charts
+const pieChartPlanned = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
+const pieChartActual = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
+// getting the date
 const date = new Date();
 
 client.once("clientReady", () => {
@@ -18,10 +19,12 @@ client.once("clientReady", () => {
 
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
-
+ 
+  //response to user typing /statement
   if (interaction.commandName === "statement"){
 
-    const pieConfig2 = {
+    // the planned pie chart
+    const piePlannedConfig = {
       type: 'pie',
       data: {
         labels: ['Apples', 'Bananas', 'Cherries', 'Dates', 'Peaches', 'Pears', 'Blueberries', 'Strawberries', 'Kiwis', 'Oranges'],
@@ -51,9 +54,11 @@ client.on("interactionCreate", async (interaction) => {
       }
     };
 
-    const image2 = await pieChart2.renderToBuffer(pieConfig2);
-
-      const pieConfig3 = {
+    //make an image
+    const imagePlanned = await pieChartPlanned.renderToBuffer(piePlannedConfig);
+    
+    // the actual pie chart
+    const pieActualConfig = {
       type: 'pie',
       data: {
         labels: ['Apples', 'Bananas', 'Cherries', 'Dates', 'Peaches', 'Pears', 'Blueberries', 'Strawberries', 'Kiwis', 'Oranges'],
@@ -83,19 +88,24 @@ client.on("interactionCreate", async (interaction) => {
       }
     };
 
-    const image3 = await pieChart3.renderToBuffer(pieConfig3);
+    // make an image
+    const imageActual = await pieChartActual.renderToBuffer(pieActualConfig);
 
-    //combine two images:
-    const img1 = await loadImage(image2);
-    const img2 = await loadImage(image3);
-    const canvas = createCanvas((img1.width + img2.width), (img1.height));
+    // load the two pie chart images:
+    const imgPlanned = await loadImage(imagePlanned);
+    const imgActual = await loadImage(imageActual);
+    // create a new canvas on which to place both images
+    const canvas = createCanvas((imgPlanned.width + imgActual.width), (imgPlanned.height));
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(img1, 0, 0);
-    ctx.drawImage(img2, img1.width, 0);
+    // place the images on the new canvas, side by side
+    ctx.drawImage(imgPlanned, 0, 0);
+    ctx.drawImage(imgActual, imgPlanned.width, 0);
+    // place the canvas in the image
     const combinedImage = canvas.toBuffer();
-    const comboImage = new AttachmentBuilder(combinedImage, { name: 'comboImage.png' });
+    // create the attachment
+    const comboChartImage = new AttachmentBuilder(combinedImage, { name: 'comboChartImage.png' });
 
-    //The embed for our statement that holds the information.
+    // the embed for our statement that holds the information.
     const statement = new EmbedBuilder()
       .setColor('#feffb9')
       .setTitle((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' Statement')
@@ -105,7 +115,8 @@ client.on("interactionCreate", async (interaction) => {
       )
       .setTimestamp();
 
-    interaction.reply({ embeds: [statement], files: [comboImage]});
+    // have the bot reply with the embed and the image
+    interaction.reply({ embeds: [statement], files: [comboChartImage]});
   }
 
 });
