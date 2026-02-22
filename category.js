@@ -32,9 +32,25 @@ function showAllCategory(){
 
 }
 
+// Assign the time that the user want to spend for the specific category
+function assignBudget(name, hours, minutes){
+
+}
+
+// Start the time for the chosen category
+function startTime(name){
+
+}
+
+// Stop the time for the chosen category
+function stopTime(name){
+    
+}
+
 module.exports = {
     loadCategories,
     addCategory,
     deleteCategory,
-    showAllCategory
+    showAllCategory,
+    assignBudget
 };

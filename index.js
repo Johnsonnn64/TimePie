@@ -37,6 +37,29 @@ client.on("interactionCreate", async (interaction) => {
       return interaction.reply(result);
     }
   }
+
+  // When user calls "/budget"
+  if (interaction.commandName === "budget") {
+      const name = interaction.options.getString("name");
+      const hours = interaction.options.getString("hours");
+      const minutes = interaction.options.getString("minutes");
+      const result = category.assignBudget(name, hours, minutes);
+      return interaction.reply(result);
+  }
+
+  // When user calls "/start"
+  if (interaction.commandName === "start") {
+      const name = interaction.options.getString("name");
+      const result = category.startTime(name);
+      return interaction.reply(result);
+  }
+
+  // When user calls "/stop"
+  if (interaction.commandName === "stop") {
+      const name = interaction.options.getString("name");
+      const result = category.stopTime(name);
+      return interaction.reply(result);
+  }
 });
 
 client.login(process.env.DISCORD_TOKEN);

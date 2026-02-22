@@ -29,9 +29,34 @@ const commands = [
             .setAutocomplete(true)
         )
     )
-      // .addSubcommand(sub => 
-      //   sub.setName("showAll").setDescription("Show all category").setRequired(true)
-      // ),
+    .addSubcommand(sub => 
+    sub.setName("showall").setDescription("Show all category")
+    ),
+
+    new SlashCommandBuilder()
+    .setName("budget").setDescription("Budget time for the chosen category")
+      .addStringOption(option => 
+        option.setName("name").setDescription("Name of the category").setRequired(true)
+      )
+      .addIntegerOption(option => 
+        option.setName("hours").setDescription("Number of hours").setRequired(true)
+      )
+      .addIntegerOption(option => 
+        option.setName("minutes").setDescription("Number of minutes").setRequired(true)
+      ),
+
+    new SlashCommandBuilder()
+    .setName("start").setDescription("Start the time for the chosen category")
+      .addStringOption(option => 
+        option.setName("name").setDescription("Name of the category").setRequired(true)
+      ),
+    
+    new SlashCommandBuilder()
+    .setName("stop").setDescription("stop the time for the chosen category")
+      .addStringOption(option => 
+        option.setName("name").setDescription("Name of the category").setRequired(true)
+      )
+
 ].map(c => c.toJSON());
 
 (async () => {
