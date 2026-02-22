@@ -39,7 +39,14 @@ const showAllCategory = db.prepare(`
 const assignBudget = db.prepare(`
   INSERT INTO budgets (guild_id, user_id, category, daily_min) 
   VALUES (?, ?, ?, ?)
+  ON CONFLICT(guild_id, user_id, category)
+  DO UPDATE SET daily_min = excluded.daily_min
 `);
+
+const deleteBudget = db.prepare(`
+  DELETE FROM budgets
+  WHERE guild_id=? AND user_id=? AND category=?
+`)
 
 const getActive = db.prepare(`
   SELECT category, start_time
@@ -71,35 +78,71 @@ const deleteActive = db.prepare(`
   WHERE guild_id = ? AND user_id = ?
   `);
 
-const stopSession = db.prepare(`
-  INSERT INTO sessions (guild_id, user_id, category, start_time, end_time, duration_min)
-  VALUES (?, ?, ?, ?, ?, ?)
+const deleteSession = db.prepare(`
+  DELETE FROM sessions
+  WHERE guild_id = ? AND user_id = ? AND category = ?
+  `);
+
+const addSession = db.prepare(`
+  INSERT INTO sessions (guild_id, user_id, category, duration_min)
+  VALUES (?, ?, ?, ?)
+  ON CONFLICT(guild_id, user_id, category)
+  DO UPDATE SET duration_min = sessions.duration_min + excluded.duration_min
   `);
 
 
 // Stop the time for the chosen category
-function stopTime(guildId, userId, category){
+function stopTime(guildId, userId){
     const active = getActive.get(guildId, userId);
     
     const now = Date.now();
-    const duration = active.duration + Math.floor((now - active.start_time)/60000);
+    const duration = Math.floor((now - active.start_time)/60000);
 
-    stopSession.run(guildId, userId, category, active.start_time, now, duration);
+    addSession.run(guildId, userId, active.category, duration);
     deleteActive.run(guildId, userId);
-    return `End tracking **${category}** at ${new Date(now).toLocaleTimeString()}. \nDuration was **${duration}** min`;
+    return `End tracking **${active.category}** at ${new Date(now).toLocaleTimeString()}. \nDuration was **${duration}** min`;
 }
 
-//const statement=db.prepare();
+const getPCategory = db.prepare(`
+  SELECT category
+  FROM budgets
+  WHERE guild_id=? AND user_id=?
+  ORDER BY category
+`)
 
-//const statementPlanned=db.prepare();
+const getACategory = db.prepare(`
+  SELECT category
+  FROM sessions
+  WHERE guild_id=? AND user_id=?
+  ORDER BY category
+`)
 
-//const statementActual=db.prepare()
+const getPData = db.prepare(`
+  SELECT daily_min
+  FROM budgets
+  WHERE guild_id=? AND user_id=?
+  ORDER BY category
+`)
+
+const getAData = db.prepare(`
+  SELECT duration_min
+  FROM sessions
+  WHERE guild_id=? AND user_id=?
+  ORDER BY category
+`)
 
 module.exports = {
-    addCategory,
-    deleteCategory,
-    showAllCategory,
-    assignBudget,
-    startTime,
-    stopTime
+  addCategory,
+  deleteCategory,
+  showAllCategory,
+  assignBudget,
+  deleteBudget,
+  deleteSession,
+  startTime,
+  stopTime,
+  addSession,
+  getPCategory,
+  getACategory,
+  getPData,
+  getAData,
 };

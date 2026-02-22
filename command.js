@@ -35,22 +35,36 @@ const commands = [
     new SlashCommandBuilder()
       .setName("budget")
       .setDescription("Budget time for the chosen category")
-      .addStringOption(option => 
-        option.setName("category")
-          .setDescription("Name of the category")
-          .setRequired(true)
-          .setAutocomplete(true)
+      .addSubcommand(sub =>
+        sub.setName("add")
+          .setDescription("Add a new budget")
+          .addStringOption(option => 
+          option.setName("category")
+            .setDescription("Name of the category")
+            .setRequired(true)
+            .setAutocomplete(true)
+        )
+        .addIntegerOption(option => 
+          option.setName("hours")
+            .setDescription("Number of hours")
+            .setRequired(true)
+        )
+        .addIntegerOption(option => 
+          option.setName("minutes")
+            .setDescription("Number of minutes")
+            .setRequired(true)
+        ),
       )
-      .addIntegerOption(option => 
-        option.setName("hours")
-          .setDescription("Number of hours")
-          .setRequired(true)
+      .addSubcommand(sub =>
+        sub.setName("delete")
+          .setDescription("Delete a budget")
+          .addStringOption(option =>
+          option.setName("category")
+            .setDescription("Name of category")
+            .setRequired(true)
+            .setAutocomplete(true)
       )
-      .addIntegerOption(option => 
-        option.setName("minutes")
-          .setDescription("Number of minutes")
-          .setRequired(true)
-      ),
+    ),
 
     new SlashCommandBuilder()
     .setName("start")
@@ -63,12 +77,8 @@ const commands = [
     ),
     
     new SlashCommandBuilder()
-    .setName("stop").setDescription("stop the time for the chosen category")
-    .addStringOption(option => 
-      option.setName("category")
-        .setDescription("Name of the category")
-        .setRequired(true)
-    ),
+    .setName("stop")
+    .setDescription("stop the time for the chosen category"),
 
   // When the user types "/statement", show them the options they can choose from
   new SlashCommandBuilder()

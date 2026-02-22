@@ -1,7 +1,7 @@
 require("dotenv").config();
 const db = require("./db");
 const { Client, GatewayIntentBits, MessageFlags } = require("discord.js");
-const { addCategory, deleteCategory, showAllCategory, assignBudget, startTime, stopTime } = require("./category");
+const { addCategory, deleteCategory, showAllCategory, assignBudget, deleteBudget, startTime, stopTime, addSession, deleteSession, getPCategory, getACategory, getPData, getAData } = require("./category");
 const { buildStatementAssets } = require("./pieCharts");
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -62,6 +62,8 @@ client.on("interactionCreate", async (interaction) => {
       if (!exists) {
         content = `Added category: **${category}**`
         addCategory.run(guildId, userId, category);
+        assignBudget.run(guildId, userId, category, 0)
+        addSession.run(guildId, userId, category, 0)
       } 
 
       await interaction.reply({ 
@@ -75,6 +77,8 @@ client.on("interactionCreate", async (interaction) => {
       if (exists) {
         content = `Deleted category: **${category}**`;
         deleteCategory.run(guildId, userId, category);
+        deleteBudget.run(guildId, userId, category);
+        deleteSession.run(guildId, userId, category);
       }
 
       await interaction.reply({
@@ -96,21 +100,31 @@ client.on("interactionCreate", async (interaction) => {
 
   // When user calls "/budget"
   if (interaction.commandName === "budget") {
-      const category = interaction.options.getString("category");
+    const sub = interaction.options.getSubcommand();
+    const category = interaction.options.getString("category");
+    var content = `Category **${category}** does not exist`;
+    if (sub === "add") {
       const hours = interaction.options.getInteger("hours");
       const minutes = interaction.options.getInteger("minutes");
       const min = hours * 60 + minutes;
-      var content = `Category **${category}** does not exist`;
 
       if (checkExists(category)) {
         content = `Assigned ${hours} hours and ${minutes} minutes to ${category}`;
-        assignBudget.run(guildId, userId, category, min)
+        assignBudget.run(guildId, userId, category, min);
+        addSession.run(guildId, userId, category, 0);
       }
-      
-      await interaction.reply({
-        content: content,
-        flags: MessageFlags.Ephemeral,
-      });
+    }
+    if (sub === "delete") {
+      if (checkExists(category)) {
+        content = `Budget ${category} deleted`;
+        deleteBudget.run(guildId, userId, category)
+      }
+
+    }
+    await interaction.reply({
+      content: content,
+      flags: MessageFlags.Ephemeral,
+    });
   }
 
   // When user calls "/start"
@@ -123,16 +137,28 @@ client.on("interactionCreate", async (interaction) => {
 
   // When user calls "/stop"
   if (interaction.commandName === "stop") {
-      const category = interaction.options.getString("category");
-      const result = stopTime(guildId, userId, category);
+      const result = stopTime(guildId, userId);
       await interaction.reply(result);
   }
 
   if (interaction.commandName === "statement") {
-    const { comboImage, statement } = await buildStatementAssets();
+    const pCategory = getPCategory.all(guildId, userId);
+    const pData = getPData.all(guildId, userId);
+    const aCategory = getACategory.all(guildId, userId);
+    const aData = getAData.all(guildId, userId);
+    const pc = pCategory.map(r => r.category);
+    const pd = pData.map(r => r.daily_min);
+    const ac = aCategory.map(r => r.category);
+    const ad = aData.map(r => r.duration_min);
+    console.log(pc);
+    console.log(pd);
+    console.log(ac);
+    console.log(ad);
+    const { comboImage, statement } = await buildStatementAssets(pc, pd, ac, ad);
     return interaction.reply({
       embeds: [statement],
-      files: [comboImage]
+      files: [comboImage],
+      flags: MessageFlags.Ephemeral
     })
   }
 });
