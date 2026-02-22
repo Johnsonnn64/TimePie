@@ -89,12 +89,17 @@ async function buildStatementAssets(plannedCategories, plannedData, actualCatego
   const comboImage = new AttachmentBuilder(combinedImage, { name: 'comboChartImage.png' });
 
   // the embed for our statement that holds the information.
+  var plusMinus = [];
+  for (let i = 0; i < plannedData.length; i ++) {
+    plusMinus[i] = `${plannedCategories[i]}: ${actualData[i] - plannedData[i]}`;
+  }
+
   const statement = new EmbedBuilder()
     .setColor('#feffb9')
     .setTitle((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() + ' Statement')
     .setDescription('Below is today\'s breakdown:')
     .addFields(
-      { name: '(+/-)some field here: some number here', value: ' ', inline: false },
+      { name: plusMinus.join("\n"), value: ' ', inline: false },
     )
     .setTimestamp();
   return { comboImage, statement }
