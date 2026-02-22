@@ -28,12 +28,15 @@ db.exec(`
   ON active_sessions (guild_id, user_id);
 
   CREATE TABLE IF NOT EXISTS sessions (
-    guild_id TEXT NOT NULL,
-    user_id TEXT NOT NULL,
-    category TEXT NOT NULL,
-    duration_min INTEGER NOT NULL CHECK (duration_min >= 0),
-    PRIMARY KEY (guild_id, user_id)
-  );
+  guild_id TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  category TEXT NOT NULL,
+  start_time INTEGER NOT NULL,
+  end_time INTEGER NOT NULL,
+  duration_min INTEGER NOT NULL CHECK (duration_min >= 0),
+  PRIMARY KEY (guild_id, user_id, start_time)
+);
+
 
   CREATE INDEX IF NOT EXISTS idx_session_user_start
   ON sessions (guild_id, user_id);

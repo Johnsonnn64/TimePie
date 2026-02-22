@@ -66,9 +66,14 @@ function startTime(guildId, userId, category){
   return `Start tracking **${category}** at ${new Date(now).toLocaleTimeString()}.`;
 };
 
+const deleteActive = db.prepare(`
+  DELETE FROM active_sessions
+  WHERE guild_id = ? AND user_id = ?
+  `);
+
 const stopSession = db.prepare(`
-  INSERT INTO sessions (guild_id, user_id, category, duration_min)
-  VALUES (?, ?, ?, ?)
+  INSERT INTO sessions (guild_id, user_id, category, start_time, end_time, duration_min)
+  VALUES (?, ?, ?, ?, ?, ?)
   `);
 
 
@@ -76,15 +81,12 @@ const stopSession = db.prepare(`
 function stopTime(guildId, userId, category){
     const active = getActive.get(guildId, userId);
     
-    if(!active){
-      return `You don't have a timmer running for **${active.category}**. You can only stop a started time.`;
-    }
-
     const now = Date.now();
-    const duration = Math.floor(active.duration + Math.floor(stopTime - getStart)/60000)
+    const duration = active.duration + Math.floor((now - active.start_time)/60000);
 
-    stopSession.run(guildId, userId, category, now, duration);
-    return `End tracking **${category}** at ${new Date(now).toLocaleTimeString()}.\nDuration was **${duration}**`;
+    stopSession.run(guildId, userId, category, active.start_time, now, duration);
+    deleteActive.run(guildId, userId);
+    return `End tracking **${category}** at ${new Date(now).toLocaleTimeString()}. \nDuration was **${duration}** min`;
 }
 
 //const statement=db.prepare();
