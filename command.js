@@ -35,7 +35,7 @@ const commands = [
     new SlashCommandBuilder()
     .setName("budget").setDescription("Budget time for the chosen category")
       .addStringOption(option => 
-        option.setName("name").setDescription("Name of the category").setRequired(true)
+        option.setName("category").setDescription("Name of the category").setRequired(true)
       )
       .addIntegerOption(option => 
         option.setName("hours").setDescription("Number of hours").setRequired(true)
@@ -47,13 +47,13 @@ const commands = [
     new SlashCommandBuilder()
     .setName("start").setDescription("Start the time for the chosen category")
       .addStringOption(option => 
-        option.setName("name").setDescription("Name of the category").setRequired(true)
+        option.setName("category").setDescription("Name of the category").setRequired(true)
       ),
     
     new SlashCommandBuilder()
     .setName("stop").setDescription("stop the time for the chosen category")
       .addStringOption(option => 
-        option.setName("name").setDescription("Name of the category").setRequired(true)
+        option.setName("category").setDescription("Name of the category").setRequired(true)
       )
 
 ].map(c => c.toJSON());

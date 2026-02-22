@@ -23,16 +23,16 @@ client.on("interactionCreate", async (interaction) => {
   // When user calls "/category"
   if (interaction.commandName === "category") {
     const sub = interaction.options.getSubcommand();
-    const name = interaction.options.getString("category");
+    const category = interaction.options.getString("category");
 
     if (sub === "add") {
-      addCategory.run(guildId, userId, name);
-      return interaction.reply({ content: `Added category: **${name}**`, ephemeral: true});
+      addCategory.run(guildId, userId, category);
+      return interaction.reply({ content: `Added category: **${category}**`, ephemeral: true});
     }
 
     if (sub === "delete") {
-      deleteCategory.run(guildId, userId, name);
-      return interaction.reply({content: `Deleted category: **${name}**`, ephemeral: true});
+      deleteCategory.run(guildId, userId, category);
+      return interaction.reply({content: `Deleted category: **${category}**`, ephemeral: true});
     }
 
     if (sub === "showAll") {
@@ -44,24 +44,24 @@ client.on("interactionCreate", async (interaction) => {
 
   // When user calls "/budget"
   if (interaction.commandName === "budget") {
-      const name = interaction.options.getString("name");
+      const category = interaction.options.getString("category");
       const hours = interaction.options.getString("hours");
       const minutes = interaction.options.getString("minutes");
-      const result = category.assignBudget(name, hours, minutes);
+      const result = category.assignBudget(category, hours, minutes);
       return interaction.reply(result);
   }
 
   // When user calls "/start"
   if (interaction.commandName === "start") {
-      const name = interaction.options.getString("name");
-      const result = category.startTime(name);
+      const category = interaction.options.getString("category");
+      const result = category.startTime(category);
       return interaction.reply(result);
   }
 
   // When user calls "/stop"
   if (interaction.commandName === "stop") {
-      const name = interaction.options.getString("name");
-      const result = category.stopTime(name);
+      const category = interaction.options.getString("category");
+      const result = category.stopTime(category);
       return interaction.reply(result);
   }
 });
