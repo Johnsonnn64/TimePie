@@ -2,6 +2,7 @@ require("dotenv").config();
 const db = require("./db");
 const { Client, GatewayIntentBits, MessageFlags } = require("discord.js");
 const { addCategory, deleteCategory, showAllCategory, assignBudget, startTime, stopTime } = require("./category");
+const { buildStatementAssets } = require("./pieCharts");
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once("clientReady", () => {
@@ -125,6 +126,14 @@ client.on("interactionCreate", async (interaction) => {
       const category = interaction.options.getString("category");
       const result = stopTime(guildId, userId, category);
       await interaction.reply(result);
+  }
+
+  if (interaction.commandName === "statement") {
+    const { comboImage, statement } = await buildStatementAssets();
+    return interaction.reply({
+      embeds: [statement],
+      files: [comboImage]
+    })
   }
 });
 

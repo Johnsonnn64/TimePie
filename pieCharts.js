@@ -1,27 +1,18 @@
 require("dotenv").config();
 
-const { Client, GatewayIntentBits, AttachmentBuilder, EmbedBuilder } = require("discord.js");
+const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const { createCanvas, loadImage } = require('canvas');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 //creating pie charts
-const pieChart = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
-const pieChart2 = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
-const pieChart3 = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
+const pieChartPlanned = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
+const pieChartActual = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
 //the date
+
+async function buildStatementAssets() {
 const date = new Date();
 
-client.once("clientReady", () => {
-  console.log(`Logged in as ${client.user.tag}`);
-});
-
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-
-  if (interaction.commandName === "statement"){
-
-    const pieConfig2 = {
+    const plannedConfig = {
       type: 'pie',
       data: {
         labels: ['Apples', 'Bananas', 'Cherries', 'Dates', 'Peaches', 'Pears', 'Blueberries', 'Strawberries', 'Kiwis', 'Oranges'],
@@ -51,9 +42,7 @@ client.on("interactionCreate", async (interaction) => {
       }
     };
 
-    const image2 = await pieChart2.renderToBuffer(pieConfig2);
-
-      const pieConfig3 = {
+      const actualConfig = {
       type: 'pie',
       data: {
         labels: ['Apples', 'Bananas', 'Cherries', 'Dates', 'Peaches', 'Pears', 'Blueberries', 'Strawberries', 'Kiwis', 'Oranges'],
@@ -83,11 +72,12 @@ client.on("interactionCreate", async (interaction) => {
       }
     };
 
-    const image3 = await pieChart3.renderToBuffer(pieConfig3);
+    const imagePlannedBuf = await pieChartPlanned.renderToBuffer(plannedConfig);
+    const imageActualBuf = await pieChartActual.renderToBuffer(actualConfig);
 
     //combine two images:
-    const img1 = await loadImage(image2);
-    const img2 = await loadImage(image3);
+    const img1 = await loadImage(imagePlannedBuf);
+    const img2 = await loadImage(imageActualBuf);
     const canvas = createCanvas((img1.width + img2.width), (img1.height));
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img1, 0, 0);
@@ -104,10 +94,8 @@ client.on("interactionCreate", async (interaction) => {
         {name: '(+/-)some field here: some number here', value: ' ', inline: false},
       )
       .setTimestamp();
+  return { comboImage, statement }
+}
 
-    interaction.reply({ embeds: [statement], files: [comboImage]});
-  }
+module.exports = { buildStatementAssets }
 
-});
-
-client.login(process.env.DISCORD_TOKEN);

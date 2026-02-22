@@ -72,16 +72,8 @@ const commands = [
 
   // When the user types "/statement", show them the options they can choose from
   new SlashCommandBuilder()
-    .setName("statement")
-    .setDescription("Shows the pie graph")
-    .addSubcommand(sub => 
-      sub.setName("plan")
-        .setDescription("The planned time as a pie graph")
-    )
-    .addSubcommand(sub => 
-      sub.setName("actual")
-        .setDescription("the actual time you spent as a pie graph")
-    )
+  .setName("statement")
+  .setDescription("Shows the pie graph")
     
 ].map(c => c.toJSON());
 
