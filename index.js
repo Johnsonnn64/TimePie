@@ -150,10 +150,6 @@ client.on("interactionCreate", async (interaction) => {
     const pd = pData.map(r => r.daily_min);
     const ac = aCategory.map(r => r.category);
     const ad = aData.map(r => r.duration_min);
-    console.log(pc);
-    console.log(pd);
-    console.log(ac);
-    console.log(ad);
     const { comboImage, statement } = await buildStatementAssets(pc, pd, ac, ad);
     return interaction.reply({
       embeds: [statement],
