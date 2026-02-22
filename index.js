@@ -96,8 +96,8 @@ client.on("interactionCreate", async (interaction) => {
   // When user calls "/budget"
   if (interaction.commandName === "budget") {
       const category = interaction.options.getString("category");
-      const hours = interaction.options.getString("hours");
-      const minutes = interaction.options.getString("minutes");
+      const hours = interaction.options.getInteger("hours");
+      const minutes = interaction.options.getInteger("minutes");
       const min = hours * 60 + minutes;
       var content = `Category **${category}** does not exist`;
 
