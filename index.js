@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
-const category = require("C:\Users\keila\OneDrive\Documents\GitHub\TimePie\category.js");
+const category = require("./category.js");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
