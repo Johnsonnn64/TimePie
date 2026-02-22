@@ -25,13 +25,14 @@ client.on("interactionCreate", async (interaction) => {
     await interaction.reply("pong!");
   }
 
+  // shows suggestions/ autocomplete for categories
   if (interaction.isAutocomplete()) {
     const focused = interaction.options.getFocused(true);
 
     if (focused.name !== "category") return interaction.respond([]);
 
     const cmd = interaction.commandName;
-    if ( cmd !== "category" && cmd !== "budget" ) return interaction.respond([])
+    if ( cmd !== "category" && cmd !== "budget" && cmd !== "start" ) return interaction.respond([])
 
     const typed = String(focused.value || "").toLowerCase();
 

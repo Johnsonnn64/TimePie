@@ -59,6 +59,7 @@ const commands = [
       option.setName("category")
         .setDescription("Name of the category")
         .setRequired(true)
+        .setAutocomplete(true)
     ),
     
     new SlashCommandBuilder()
