@@ -1,11 +1,14 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, Message, Attachment } = require("discord.js");
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+const { createCanvas, loadImage } = require('canvas');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+//creating pie charts
 const pieChart = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
 const pieChart2 = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
 const pieChart3 = new ChartJSNodeCanvas({width: 500, height: 500}); //pixel x pixel size
+//the date
 const date = new Date();
 
 client.once("clientReady", () => {
@@ -57,13 +60,19 @@ client.on("interactionCreate", async (interaction) => {
       },
       options: {
         plugins: {
+          title: {
+            display: true,
+            text: 'Planned',
+            align: 'start',
+            font: { size: 35, weight: 'bold'}
+          },
           legend: {
             display: true,
-            position: 'right', // vertical legend
+            position: 'right',
             labels: {
-              boxWidth: 30,    // bigger color boxes
-              font: {size: 18}, //bigger text
-              padding: 20      // spacing between items
+              boxWidth: 30,
+              font: {size: 18},
+              padding: 20
             }
           }
         }
@@ -71,7 +80,6 @@ client.on("interactionCreate", async (interaction) => {
     };
 
     const image2 = await pieChart2.renderToBuffer(pieConfig2);
-    const pie2 = new AttachmentBuilder(image2, { name: 'Image2.png' });
 
       const pieConfig3 = {
       type: 'pie',
@@ -84,13 +92,19 @@ client.on("interactionCreate", async (interaction) => {
       },
       options: {
         plugins: {
+          title: {
+            display: true,
+            text: 'Actual',
+            align: 'start',
+            font: { size: 35, weight: 'bold'}
+          },
           legend: {
             display: true,
-            position: 'right', // vertical legend
+            position: 'right',
             labels: {
-              boxWidth: 30,    // bigger color boxes
-              font: {size: 18}, //bigger text
-              padding: 20      // spacing between items
+              boxWidth: 30,
+              font: {size: 18},
+              padding: 20
             }
           }
         }
@@ -98,7 +112,16 @@ client.on("interactionCreate", async (interaction) => {
     };
 
     const image3 = await pieChart3.renderToBuffer(pieConfig3);
-    const pie3 = new AttachmentBuilder(image3, { name: 'Image3.png' });
+
+    //combine two images:
+    const img1 = await loadImage(image2);
+    const img2 = await loadImage(image3);
+    const canvas = createCanvas((img1.width + img2.width), (img1.height));
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img1, 0, 0);
+    ctx.drawImage(img2, img1.width, 0);
+    const combinedImage = canvas.toBuffer();
+    const comboImage = new AttachmentBuilder(combinedImage, { name: 'comboImage.png' });
 
     //The embed for our statement that holds the information.
     const statement = new EmbedBuilder()
@@ -110,7 +133,7 @@ client.on("interactionCreate", async (interaction) => {
       )
       .setTimestamp();
 
-    interaction.reply({ embeds: [statement], files: [image2, image3]});
+    interaction.reply({ embeds: [statement], files: [comboImage]});
   }
 
 });
