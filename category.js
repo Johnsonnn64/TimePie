@@ -15,7 +15,7 @@ function saveCategories(categories) {
 // Add the name of the new category and check if the category already exist.
 // If it's a new name category, at it to category list in SQLite
 const addCategory = db.prepare(`
-  INSERT INTO categories (guild_id, user_id, category)
+  INSERT OR IGNORE INTO categories (guild_id, user_id, category)
   VALUES (?, ?, ?)
 `)
 
@@ -39,27 +39,47 @@ const showAllCategory = db.prepare(`
 const assignBudget = db.prepare(`
   INSERT INTO budgets (guild_id, user_id, category, daily_min) 
   VALUES (?, ?, ?, ?)
-`)
+`);
+
+const getActive = db.prepare(`
+  SELECT category, start_time
+  FROM active_sessions
+  WHERE guild_id=? AND user_id=?
+  `);
+
+const startSession = db.prepare(`
+  INSERT INTO active_sessions (guild_id, user_id, category, start_time)
+  VALUES (?, ?, ?, ?)
+  `);
 
 // Start the time for the chosen category
-function startTime(name){
+function startTime(guildId, userId, category){
+  const active = getActive.get(guildId, userId);
 
-}
+  if(active){
+    return `You already have a timmer runing for **${active.category}**. Stop it first before starting a new one.`;
+  }
+  const now = Date.now();
+  startSession.run(guildId, userId, category, now);
+  return `Start tracking **${category}** at ${new Date(now).toLocaleTimeString()}.`;
+};
+
 
 // Stop the time for the chosen category
 function stopTime(name){
     
 }
 
-const statement=db.prepare();
+//const statement=db.prepare();
 
-const statementPlanned=db.prepare();
+//const statementPlanned=db.prepare();
 
-const statementActual=db.prepare()
+//const statementActual=db.prepare()
 
 module.exports = {
     addCategory,
     deleteCategory,
     showAllCategory,
-    assignBudget
+    assignBudget,
+    startTime
 };
