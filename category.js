@@ -51,6 +51,12 @@ function stopTime(name){
     
 }
 
+const statement=db.prepare();
+
+const statementPlanned=db.prepare();
+
+const statementActual=db.prepare()
+
 module.exports = {
     addCategory,
     deleteCategory,

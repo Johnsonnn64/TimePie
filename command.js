@@ -66,7 +66,21 @@ const commands = [
       option.setName("category")
         .setDescription("Name of the category")
         .setRequired(true)
+    ),
+
+  // When the user types "/statement", show them the options they can choose from
+  new SlashCommandBuilder()
+    .setName("statement")
+    .setDescription("Shows the pie graph")
+    .addSubcommand(sub => 
+      sub.setName("plan")
+        .setDescription("The planned time as a pie graph")
     )
+    .addSubcommand(sub => 
+      sub.setName("actual")
+        .setDescription("the actual time you spent as a pie graph")
+    )
+    
 ].map(c => c.toJSON());
 
 (async () => {
