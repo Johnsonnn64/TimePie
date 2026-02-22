@@ -1,7 +1,7 @@
 require("dotenv").config();
 const db = require("./db");
 const { Client, GatewayIntentBits, MessageFlags } = require("discord.js");
-const { addCategory, deleteCategory, showAllCategory, assignBudget } = require("./category");
+const { addCategory, deleteCategory, showAllCategory, assignBudget, startTime } = require("./category");
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once("clientReady", () => {
@@ -114,7 +114,7 @@ client.on("interactionCreate", async (interaction) => {
   // When user calls "/start"
   if (interaction.commandName === "start") {
       const category = interaction.options.getString("category");
-      const result = category.startTime(category);
+      const result = startTime(guildId, userId, category);
       await interaction.reply(result);
   }
 
