@@ -36,9 +36,10 @@ const showAllCategory = db.prepare(`
 `);
 
 // Assign the time that the user want to spend for the specific category
-function assignBudget(name, hours, minutes){
-
-}
+const assignBudget = db.prepare(`
+  INSERT INTO budgets (guild_id, user_id, category, daily_min) 
+  VALUES (?, ?, ?, ?)
+`)
 
 // Start the time for the chosen category
 function startTime(name){

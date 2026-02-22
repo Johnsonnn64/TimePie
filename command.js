@@ -33,29 +33,40 @@ const commands = [
     ),
 
     new SlashCommandBuilder()
-    .setName("budget").setDescription("Budget time for the chosen category")
+      .setName("budget")
+      .setDescription("Budget time for the chosen category")
       .addStringOption(option => 
-        option.setName("category").setDescription("Name of the category").setRequired(true)
+        option.setName("category")
+          .setDescription("Name of the category")
+          .setRequired(true)
       )
       .addIntegerOption(option => 
-        option.setName("hours").setDescription("Number of hours").setRequired(true)
+        option.setName("hours")
+          .setDescription("Number of hours")
+          .setRequired(true)
       )
       .addIntegerOption(option => 
-        option.setName("minutes").setDescription("Number of minutes").setRequired(true)
+        option.setName("minutes")
+          .setDescription("Number of minutes")
+          .setRequired(true)
       ),
 
     new SlashCommandBuilder()
-    .setName("start").setDescription("Start the time for the chosen category")
-      .addStringOption(option => 
-        option.setName("category").setDescription("Name of the category").setRequired(true)
-      ),
+    .setName("start")
+    .setDescription("Start the time for the chosen category")
+    .addStringOption(option => 
+      option.setName("category")
+        .setDescription("Name of the category")
+        .setRequired(true)
+    ),
     
     new SlashCommandBuilder()
     .setName("stop").setDescription("stop the time for the chosen category")
-      .addStringOption(option => 
-        option.setName("category").setDescription("Name of the category").setRequired(true)
-      )
-
+    .addStringOption(option => 
+      option.setName("category")
+        .setDescription("Name of the category")
+        .setRequired(true)
+    )
 ].map(c => c.toJSON());
 
 (async () => {

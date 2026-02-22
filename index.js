@@ -1,6 +1,6 @@
 require("dotenv").config();
-const { Client, GatewayIntentBits } = require("discord.js");
-const { addCategory, deleteCategory, showAllCategory } = require("./category");
+const { Client, GatewayIntentBits, MessageFlags } = require("discord.js");
+const { addCategory, deleteCategory, showAllCategory, assignBudget } = require("./category");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -27,18 +27,28 @@ client.on("interactionCreate", async (interaction) => {
 
     if (sub === "add") {
       addCategory.run(guildId, userId, category);
-      return interaction.reply({ content: `Added category: **${category}**`, ephemeral: true});
+      return interaction.reply({ 
+        content: `Added category: **${category}**`,
+        flags: MessageFlags.Ephemeral,
+      });
     }
 
     if (sub === "delete") {
       deleteCategory.run(guildId, userId, category);
-      return interaction.reply({content: `Deleted category: **${category}**`, ephemeral: true});
+      return interaction.reply({
+        content: `Deleted category: **${category}**`, 
+        flags: MessageFlags.Ephemeral,
+      });
     }
 
-    if (sub === "showAll") {
-      const result = showAllCategory.run(guildId, userId);
+    if (sub === "showall") {
+      const result = showAllCategory.all(guildId, userId);
+      const c = result.map(r => r.category);
 
-      return interaction.reply({content: result, ephemeral: true});
+      return interaction.reply({
+        content: `Your categories: ${JSON.stringify(c)}`,
+        flags: MessageFlags.Ephemeral,
+      });
     }
   }
 
@@ -47,8 +57,13 @@ client.on("interactionCreate", async (interaction) => {
       const category = interaction.options.getString("category");
       const hours = interaction.options.getString("hours");
       const minutes = interaction.options.getString("minutes");
-      const result = category.assignBudget(category, hours, minutes);
-      return interaction.reply(result);
+      const min = hours * 60 + minutes;
+      assignBudget.run(guildId, userId, category, min)
+      
+      return interaction.reply({
+        content: `Assigned ${hours} hours and ${minutes} minutes to ${category}`,
+        flags: MessageFlags.Ephemeral,
+      });
   }
 
   // When user calls "/start"
