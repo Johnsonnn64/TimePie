@@ -8,19 +8,27 @@ const commands = [
 
   // When the user types "/category", show them the options they can choose from
   new SlashCommandBuilder()
-    .setName("category").setDescription("Manage categories")
-      .addSubcommand(sub => 
-        sub.setName("add").setDescription("Add a new category")
+    .setName("category")
+    .setDescription("Manage categories")
+    .addSubcommand(sub => 
+      sub.setName("add")
+        .setDescription("Add a new category")
         .addStringOption(option => 
-          option.setName("name").setDescription("Name of the category").setRequired(true)
-          )
+          option.setName("category")
+            .setDescription("Name of the category")
+            .setRequired(true)
         )
-      .addSubcommand(sub => 
-        sub.setName("delete").setDescription("Delete an existing category")
+    )
+    .addSubcommand(sub => 
+      sub.setName("delete")
+        .setDescription("Delete an existing category")
         .addStringOption(option=> 
-          option.setName("name").setDescription("Name of the category").setRequired(true).setAutocomplete(true)
+          option.setName("category")
+            .setDescription("Name of the category")
+            .setRequired(true)
+            .setAutocomplete(true)
         )
-      )
+    )
       // .addSubcommand(sub => 
       //   sub.setName("showAll").setDescription("Show all category").setRequired(true)
       // ),
