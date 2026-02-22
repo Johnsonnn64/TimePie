@@ -57,17 +57,34 @@ function startTime(guildId, userId, category){
   const active = getActive.get(guildId, userId);
 
   if(active){
-    return `You already have a timmer runing for **${active.category}**. Stop it first before starting a new one.`;
+    return `You already have a timmer running for **${active.category}**. Stop it first before starting a new one.`;
   }
+
   const now = Date.now();
   startSession.run(guildId, userId, category, now);
+  
   return `Start tracking **${category}** at ${new Date(now).toLocaleTimeString()}.`;
 };
 
+const stopSession = db.prepare(`
+  INSERT INTO sessions (guild_id, user_id, category, duration_min)
+  VALUES (?, ?, ?, ?)
+  `);
+
 
 // Stop the time for the chosen category
-function stopTime(name){
+function stopTime(guildId, userId, category){
+    const active = getActive.get(guildId, userId);
     
+    if(!active){
+      return `You don't have a timmer running for **${active.category}**. You can only stop a started time.`;
+    }
+
+    const now = Date.now();
+    const duration = Math.floor(active.duration + Math.floor(stopTime - getStart)/60000)
+
+    stopSession.run(guildId, userId, category, now, duration);
+    return `End tracking **${category}** at ${new Date(now).toLocaleTimeString()}.\nDuration was **${duration}**`;
 }
 
 //const statement=db.prepare();
@@ -81,5 +98,6 @@ module.exports = {
     deleteCategory,
     showAllCategory,
     assignBudget,
-    startTime
+    startTime,
+    stopTime
 };

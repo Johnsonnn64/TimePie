@@ -13,7 +13,6 @@ client.on("interactionCreate", async (interaction) => {
 
   const guildId = interaction.guildId;
   const userId = interaction.user.id;
-  const now = Math.floor(Date.now() / 1000);
 
   // When user calls "/ping"
   if (interaction.commandName === "ping") {
@@ -68,8 +67,8 @@ client.on("interactionCreate", async (interaction) => {
 
   // When user calls "/start"
   if (interaction.commandName === "start") {
-      const catName = interaction.options.getString("category");
-      const result = startTime(guildId, userId, catName);
+      const category = interaction.options.getString("category");
+      const result = startTime(guildId, userId, category);
       return interaction.reply(result);
   }
 
