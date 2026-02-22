@@ -21,9 +21,9 @@ const commands = [
           option.setName("name").setDescription("Name of the category").setRequired(true).setAutocomplete(true)
         )
       )
-      .addSubcommand(sub => 
-        sub.setName("showAll").setDescription("Show all category")
-      ),
+      // .addSubcommand(sub => 
+      //   sub.setName("showAll").setDescription("Show all category").setRequired(true)
+      // ),
 ].map(c => c.toJSON());
 
 (async () => {
