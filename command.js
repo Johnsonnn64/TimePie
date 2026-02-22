@@ -35,7 +35,10 @@ const commands = [
     new SlashCommandBuilder()
     .setName("budget").setDescription("Budget time for the chosen category")
       .addStringOption(option => 
-        option.setName("category").setDescription("Name of the category").setRequired(true)
+        option.setName("category")
+          .setDescription("Name of the category")
+          .setRequired(true)
+          .setAutocomplete(true)
       )
       .addIntegerOption(option => 
         option.setName("hours").setDescription("Number of hours").setRequired(true)
