@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
-const category = require("./category.js");
+const { addCategory, deleteCategory, showAllCategory } = require("./category");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -11,6 +11,10 @@ client.once("clientReady", () => {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
+  const guildId = interaction.guildId;
+  const userId = interaction.user.id;
+  const now = Math.floor(Date.now() / 1000);
+
   // When user calls "/ping"
   if (interaction.commandName === "ping") {
     await interaction.reply("pong!");
@@ -19,22 +23,22 @@ client.on("interactionCreate", async (interaction) => {
   // When user calls "/category"
   if (interaction.commandName === "category") {
     const sub = interaction.options.getSubcommand();
+    const name = interaction.options.getString("category");
 
     if (sub === "add") {
-      const name = interaction.options.getString("name");
-      const result = category.addCategory(name);
-      return interaction.reply(result);
+      addCategory.run(guildId, userId, name);
+      return interaction.reply({ content: `Added category: **${name}**`, ephemeral: true});
     }
 
     if (sub === "delete") {
-      const name = interaction.options.getString("name");
-      const result = category.deleteCategory(name);
-      return interaction.reply(result);
+      deleteCategory.run(guildId, userId, name);
+      return interaction.reply({content: `Deleted category: **${name}**`, ephemeral: true});
     }
 
     if (sub === "showAll") {
-      const result = category.showAllCategory();
-      return interaction.reply(result);
+      const result = showAllCategory.run(guildId, userId);
+
+      return interaction.reply({content: result, ephemeral: true});
     }
   }
 

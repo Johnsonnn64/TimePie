@@ -25,7 +25,7 @@ db.exec(`
   );
 
   CREATE INDEX IF NOT EXISTS idx_categories_user
-  ON categories (guild_id, user_id);
+  ON active_sessions (guild_id, user_id);
 
   CREATE TABLE IF NOT EXISTS sessions (
     guild_id TEXT NOT NULL,
@@ -38,7 +38,7 @@ db.exec(`
   );
 
   CREATE INDEX IF NOT EXISTS idx_session_user_start
-  ON categories (guild_id, user_id, start_time);
+  ON sessions (guild_id, user_id, start_time);
 
   CREATE TABLE IF NOT EXISTS budgets (
     guild_id TEXT NOT NULL,

@@ -1,6 +1,5 @@
 require("dotenv").config();
 const { REST, Routes, SlashCommandBuilder } = require("discord.js");
-const category = require("./category.js")
 
 const commands = [
   // When the user types "/ping"
